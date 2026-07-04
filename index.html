@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account</title>
+<style>
+  :root {
+    --bg-deep: #0d0a1f;
+    --glass: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --accent-1: #a855f7;
+    --accent-2: #ec4899;
+    --text-light: #f3f0ff;
+    --text-muted: #b6aed0;
+    --error: #ff6b6b;
+    --success: #4ade80;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-deep);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Aurora glow blobs */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.55;
+    z-index: 0;
+  }
+  .blob1 {
+    width: 380px; height: 380px;
+    background: var(--accent-1);
+    top: -120px; left: -100px;
+  }
+  .blob2 {
+    width: 320px; height: 320px;
+    background: var(--accent-2);
+    bottom: -100px; right: -80px;
+  }
+  .blob3 {
+    width: 260px; height: 260px;
+    background: #38bdf8;
+    top: 40%; right: 10%;
+    opacity: 0.25;
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 40px 36px 36px;
+    width: 340px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  h1 {
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
+    font-size: 27px;
+    margin: 0 0 30px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .field {
+    position: relative;
+    margin-bottom: 26px;
+  }
+
+  input {
+    width: 100%;
+    padding: 16px 14px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.04);
+    color: var(--text-light);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  input::placeholder {
+    color: transparent;
+  }
+
+  label {
+    position: absolute;
+    left: 14px;
+    top: 15px;
+    color: var(--text-muted);
+    font-size: 15px;
+    pointer-events: none;
+    transition: all 0.18s ease;
+  }
+
+  input:focus,
+  input:not(:placeholder-shown) {
+    border-color: var(--accent-1);
+    background: rgba(168, 85, 247, 0.08);
+  }
+
+  input:focus + label,
+  input:not(:placeholder-shown) + label {
+    top: 5px;
+    font-size: 11px;
+    color: var(--accent-1);
+  }
+
+  input.error {
+    border-color: var(--error);
+  }
+
+  input.error:focus + label,
+  input.error:not(:placeholder-shown) + label {
+    color: var(--error);
+  }
+
+  .error-msg {
+    color: var(--error);
+    font-size: 12px;
+    margin-top: 5px;
+    margin-left: 2px;
+    min-height: 14px;
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.2s;
+    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.35);
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(236, 72, 153, 0.45);
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  .success {
+    display: none;
+    color: var(--success);
+    text-align: center;
+    font-size: 14px;
+    margin-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<div class="card">
+  <h1>Create Account</h1>
+  <form id="registerForm" novalidate>
+    <div class="field">
+      <input type="text" id="name" placeholder=" ">
+      <label for="name">Name</label>
+      <div class="error-msg" id="nameError"></div>
+    </div>
+
+    <div class="field">
+      <input type="email" id="email" placeholder=" ">
+      <label for="email">Email</label>
+      <div class="error-msg" id="emailError"></div>
+    </div>
+
+    <div class="field">
+      <input type="password" id="password" placeholder=" ">
+      <label for="password">Password</label>
+      <div class="error-msg" id="passwordError"></div>
+    </div>
+
+    <button type="submit">Register</button>
+    <div class="success" id="successMsg">Account created successfully!</div>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('registerForm');
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const successMsg = document.getElementById('successMsg');
+
+  function setError(input, errorEl, message) {
+    if (message) {
+      input.classList.add('error');
+      errorEl.textContent = message;
+    } else {
+      input.classList.remove('error');
+      errorEl.textContent = '';
+    }
+  }
+
+  function validateName() {
+    const value = nameInput.value.trim();
+    if (!value) {
+      setError(nameInput, document.getElementById('nameError'), 'Name is required');
+      return false;
+    }
+    setError(nameInput, document.getElementById('nameError'), '');
+    return true;
+  }
+
+  function validateEmail() {
+    const value = emailInput.value.trim();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value) {
+      setError(emailInput, document.getElementById('emailError'), 'Email is required');
+      return false;
+    }
+    if (!emailPattern.test(value)) {
+      setError(emailInput, document.getElementById('emailError'), 'Enter a valid email');
+      return false;
+    }
+    setError(emailInput, document.getElementById('emailError'), '');
+    return true;
+  }
+
+  function validatePassword() {
+    const value = passwordInput.value;
+    if (!value) {
+      setError(passwordInput, document.getElementById('passwordError'), 'Password is required');
+      return false;
+    }
+    if (value.length < 6) {
+      setError(passwordInput, document.getElementById('passwordError'), 'At least 6 characters');
+      return false;
+    }
+    setError(passwordInput, document.getElementById('passwordError'), '');
+    return true;
+  }
+
+  nameInput.addEventListener('input', validateName);
+  emailInput.addEventListener('input', validateEmail);
+  passwordInput.addEventListener('input', validatePassword);
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    successMsg.style.display = 'none';
+
+    const isNameValid = validateName();
+    const isEmailValid = validateEmail();
+    const isPasswordValid = validatePassword();
+
+    if (isNameValid && isEmailValid && isPasswordValid) {
+      const userData = {
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      };
+      console.log('Registering user:', userData);
+
+      successMsg.style.display = 'block';
+      form.reset();
+    }
+  });
+</script>
+
+</body>
+</html>
